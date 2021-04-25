@@ -1,0 +1,9 @@
+output/
+src/gen/
+build/.vs/
+build/tmp/
+x64/
+*.db
+include/proto/
+.vs/
+*.opendb
