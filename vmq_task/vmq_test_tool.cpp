@@ -13,10 +13,11 @@
 #include "player.h"
 #include "task.h"
 #include "task_manager.h"
+#include "spdlog/sinks/basic_file_sink.h"
 
-const int WORKER_COUNT = 10;			// 100
-const int TEST_PLAYER_MAX = 5000;		// 5000
-const int TEST_WORKER_PER_PLAYER = 100;	// 100
+const int WORKER_COUNT = 100;			// 100
+const int TEST_PLAYER_MAX = 500;		// 5000
+const int TEST_WORKER_PER_PLAYER = 10;	// 100
 
 struct statistics
 {
