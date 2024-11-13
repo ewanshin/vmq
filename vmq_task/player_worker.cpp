@@ -1,14 +1,8 @@
-ï»¿#include <queue>
-#include <unordered_map>
-#include <future>
+#include "stdafx.h"
+#include "player_worker.h"
+#include "player_task_manager.h"
 
-#include "queue/mpsc-queue.hpp"
-
-#include "actor.h"
-#include "player.h"
-#include "task.h"
-
-task::~task()
+player_worker::~player_worker()
 {
 	stop();
 
@@ -18,18 +12,18 @@ task::~task()
 	}
 }
 
-void task::start()
+void player_worker::start()
 {
-	thread_ptr_ = std::make_shared< std::thread >(&task::do_work, this);
+	thread_ptr_ = std::make_shared< std::thread >(&player_worker::do_work, this);
 }
 
-void task::stop()
+void player_worker::stop()
 {
 	terminated_ = true;
 }
 
 
-void task::add_player(player_key_type key,  player_ptr actor )
+void player_worker::add_player(player_key_type key,  player_ptr actor )
 {
 	
 	actor_map_.insert( { key, actor });
@@ -39,14 +33,14 @@ void task::add_player(player_key_type key,  player_ptr actor )
 
 
 
-void task::do_work()
+void player_worker::do_work()
 {
 	
 
 	while (terminated_ == false )
 	{
 		int execute_count = 0;
-		//workerì˜ posteeì²˜ë¦¬
+		//workerÀÇ posteeÃ³¸®
 		execute_count += execute_task();
 
 		int loop_index = 0;
@@ -57,7 +51,7 @@ void task::do_work()
 			{
 				execute_count += a.second->execute_task(pop_postee_per_actor_);;
 
-				//ë¬´í•œ ë£¨í”„ ëŒë¦¬ë©´ cpu 100ë¨¹ìœ¼ë‹ˆ. ë¹„ì‘ì—…ì´ worker_count_per_sleep_ ì‹¸ì´ì¦ˆ ë‹¨ìœ„ ì´ë©´ í•œë²ˆ ìŠ¤ë¦½ê±¸ì–´ì£¼ê³ ,
+				//¹«ÇÑ ·çÇÁ µ¹¸®¸é cpu 100¸ÔÀ¸´Ï. ºñÀÛ¾÷ÀÌ worker_count_per_sleep_ ½ÎÀÌÁî ´ÜÀ§ ÀÌ¸é ÇÑ¹ø ½º¸³°É¾îÁÖ°í,
 				if (loop_index != 0 && loop_index % worker_count_per_sleep_ == 0)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));

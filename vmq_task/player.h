@@ -1,5 +1,4 @@
-﻿#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#pragma once
 
 typedef int player_key_type;
 
@@ -24,7 +23,7 @@ private:
 
 typedef std::shared_ptr< player > player_ptr;
 
-// player 객체를 만드는 모듈
+
 class player_factory 
 {
 public:
@@ -34,4 +33,3 @@ public:
 	}
 };
 
-#endif	//#define __PLAYER_H__

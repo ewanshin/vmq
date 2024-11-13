@@ -1,9 +1,4 @@
-﻿#include <queue>
-#include <future>
-#include <unordered_map>
-#include "queue/mpsc-queue.hpp"
-
-#include "actor.h"
+#include "stdafx.h"
 #include "player.h"
 
 

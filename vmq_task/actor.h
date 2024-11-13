@@ -1,11 +1,9 @@
-ï»¿#ifndef __ACTOR_H__
-#define __ACTOR_H__
+#pragma once
 
 #define POP_TASK_COUNT 1
 
 
-typedef unsigned long long delay_queue_key;
-typedef std::queue< std::function<void()> >	task_queue_type;
+
 class actor
 {
 public:
@@ -14,7 +12,7 @@ public:
 
 	template<class F, class... Args>
 	auto invoke( F&& f, Args&&... args)->std::future<typename std::result_of<F(Args...)>::type>;
-	inline void set_parent(std::shared_ptr< actor > parent) 
+	inline void set_parrent(std::shared_ptr< actor > parent) 
 	{ 
 		parent_actor_ptr = parent; 
 	}
@@ -22,10 +20,13 @@ public:
 
 public:
 
-	task_queue_type				task_queue_;
-	// íƒ€ì´ë¨¸ë¥¼ ì§€ì›í•˜ëŠ” task managerë¥¼ ë§Œë“œë ¤ë©´ ì–´ë–»ê²Œ í•˜ëŠ”ê²Œ ë§ì„ê¹Œ?
-//	std::unordered_map <time_t, task_queue_type >	delay_queue_;	// ê° ì‹œê°„ë³„ë¡œì˜ task queue
-	std::mutex										queue_mutex_;
+	//queue¸¦ mpsc·Î ¹Ù²Û´Ù.
+#if QUEUE_TYPE == LOCK_QUEUE
+	std::queue< std::function<void()> >			task_queue_;
+	std::mutex									queue_mutex_;
+#elif QUEUE_TYPE == MPSC_QUEUE
+	mpsc_queue_t<std::function<void()> >		task_queue_;
+#endif
 
 	std::shared_ptr< actor >					parent_actor_ptr;
 };
@@ -41,24 +42,24 @@ auto actor::invoke(F&& f, Args&&... args)
 
 	auto task = std::make_shared< std::packaged_task<return_type()> >
 		(
-			// ToDo ì¼ë‹¨ queueì—ì„œ ë¹¼ë´¤ë‹¤ê°€ ì‹œê°„ê°’ì´ ì•ˆë§ìœ¼ë©´ ë‹¤ì‹œ queueì— ì§‘ì–´ë„£ëŠ”ë‹¤?? ì—­ì „ë ìˆ˜ ìˆì–ì•„!!! (ë¶ˆê°€!)
-			// Queueë¥¼ ì‹œê°„ìš°ì„ ìœ¼ë¡œ ì„¤ê³„í•œë‹¤??
-			// ë³µìˆ˜ì˜ queue, 0 ì‹œê°„ì¸ ë…€ì„, í•´ë‹¹ ì‹œê°„ì¸ ë…€ì„ìœ¼ë¡œ ì´ì¤‘í™” í•œë‹¤?? -> ì´ê²Œ ê°€ì¥ í˜„ì‹¤ì ì´ê¸´ í•œë°...
-			// ë°ì´í„° êµ¬ì¡°ê°€ ë³µì¡í•´ì§€ëŠ” ì´ìŠˆê°€ ìˆê² ì§€.. queueë¥¼ wrapping ã…›
-
-			//í…œí”Œë¦¿ í•¨ìˆ˜ëŠ” ìš°ì¸¡ê°’ ì°¸ì¡°ë¥¼ ì¶”ë¡ í•œë‹¤. f.argsê°€ ì¢Œì¸¡ê°’ì´ì–´ë„ ì»´íŒŒì¼ ì—ëŸ¬ê°€ ì•ˆë‚œë‹¤.
-			//forwardëŠ” í…œí”Œë¦¿ í•¨ìˆ˜ì—ì„œ ì¢Œì¸¡ê°’ì€ ì´¤ì¸¡ê°’, ìš°ì¸¡ê°’ì€ ìš°ì¸¡ê°’ìœ¼ë¡œ ë°”ê¾¼ë‹¤. ( ì›ë˜ì˜ í˜•íƒœ )
+			//ÅÛÇÃ¸´ ÇÔ¼ö´Â ¿ìÃø°ª ÂüÁ¶¸¦ Ãß·ĞÇÑ´Ù. f.args°¡ ÁÂÃø°ªÀÌ¾îµµ ÄÄÆÄÀÏ ¿¡·¯°¡ ¾È³­´Ù.
+			//forward´Â ÅÛÇÃ¸´ ÇÔ¼ö¿¡¼­ ÁÂÃø°ªÀº ÃÒÃø°ª, ¿ìÃø°ªÀº ¿ìÃø°ªÀ¸·Î ¹Ù²Û´Ù. ( ¿ø·¡ÀÇ ÇüÅÂ )
 			std::bind(std::forward<F>(f), std::forward<Args>(args)...)
-			);
+		);
 
 	std::future<return_type> res = task->get_future();
 
-	task_queue_.emplace([task]() { (*task)(); });
-//	delay_queue_.at(0).emplace([task]() { (*task)(); });
-//	delay_queue_.at(0).emplace([task]() { (*task)(); });
+#if QUEUE_TYPE == LOCK_QUEUE
+	{
+		std::unique_lock<std::mutex> lock(queue_mutex_);
+		task_queue_.emplace([task]() { (*task)(); });
+	}
+#else
 
-	//ê²°ê³¼ì— getí•´ì„œ waitì„ ì‚¬ìš©í• ìˆ˜ ìˆë‹¤.
+	task_queue_.emplace ( [task](){ (*task)();});
+
+#endif
+	//°á°ú¿¡ getÇØ¼­ waitÀ» »ç¿ëÇÒ¼ö ÀÖ´Ù.
 	return res;
 }
 
-#endif  //#define __ACTOR_H__

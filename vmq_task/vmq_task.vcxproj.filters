@@ -16,54 +16,51 @@
     <Filter Include="헤더 파일\queue">
       <UniqueIdentifier>{2fef968f-8232-4a68-ada4-ccc5d23c902a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Player">
-      <UniqueIdentifier>{3f19cefd-1c12-4ff9-bb89-cc41e5d0a7da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="main">
-      <UniqueIdentifier>{3408ed2c-2f15-4561-9ab8-20a89d80b6c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="task_manager">
-      <UniqueIdentifier>{493865e6-1a5f-4e09-a1cd-9c2092ac1450}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="actor">
-      <UniqueIdentifier>{b92d184a-9ac0-4c43-bb21-f7fe3ec09bd7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="actor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="player.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="player_worker.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="player_task_manager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="queue\mpsc-queue.hpp">
       <Filter>헤더 파일\queue</Filter>
     </ClInclude>
-    <ClInclude Include="actor.h">
-      <Filter>actor</Filter>
-    </ClInclude>
-    <ClInclude Include="task.h">
-      <Filter>task_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="task_manager.h">
-      <Filter>task_manager</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="vmq_task.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="actor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="vmq_test_tool.cpp">
-      <Filter>main</Filter>
+    <ClCompile Include="player_worker.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="actor.cpp">
-      <Filter>actor</Filter>
-    </ClCompile>
-    <ClCompile Include="task.cpp">
-      <Filter>task_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="task_manager.cpp">
-      <Filter>task_manager</Filter>
+    <ClCompile Include="player_task_manager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
