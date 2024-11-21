@@ -148,7 +148,6 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="queue\mpsc-queue.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="player_task_manager.h" />
   </ItemGroup>
   <ItemGroup>
