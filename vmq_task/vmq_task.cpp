@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "spdlog/spdlog.h"
 
 #define TEST_PLAYER_MAX 50000
 #define TEST_WORKER_PER_PLAYER 100
@@ -69,7 +70,8 @@ int main()
 							}
 							else
 							{
-								std::cout << "[" << i << ", " << w << "] : run" << std::endl;
+								//std::cout << "[" << i << ", " << w << "] : run" << std::endl;
+								spdlog::info("[{0},{1}] : run", i, w);
 								actor->complete_count_++;
 								if (actor->complete_count_ == TEST_WORKER_PER_PLAYER)
 								{
@@ -81,7 +83,8 @@ int main()
 
 										if (complete_count_ptr->complte_count == TEST_PLAYER_MAX)
 										{
-											std::cout << "total_worker end..." << std::endl;
+											//std::cout << "total_worker end..." << std::endl;
+											spdlog::info("total_worker end...");
 										}
 
 									});
