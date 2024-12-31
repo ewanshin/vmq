@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class player_task_manager;
 
@@ -24,7 +24,7 @@ private:
 	std::unordered_map< player_key_type, actor_ptr >	actor_map_;
 	
 	int													worker_count_per_sleep_;
-	int													pop_postee_per_actor_;			//¾×ÅÍ´ç ÇÑ¹ø¿¡ »Ì´Â Postee°¹¼ö
+	int													pop_postee_per_actor_;			//ì•¡í„°ë‹¹ í•œë²ˆì— ë½‘ëŠ” Posteeê°¯ìˆ˜
 };
 typedef std::shared_ptr<  player_worker > player_worker_ptr;
 

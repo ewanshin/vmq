@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #define VMQ_PLAYER_COUNT				(USHRT_MAX)
@@ -27,8 +27,8 @@ public:
 	void create_worker(int worker_size );
 	void create_player(player_key_type player_key, player_postee&& f_postee);
 	
-	void send_worker_postee(int worker_key, worker_postee&& postee);					//add, delete player Ã³¸®
-	void send_player_postee(player_key_type key, player_postee&& postee);				//player queue¿¡ Àü´Ü½Ã
+	void send_worker_postee(int worker_key, worker_postee&& postee);					//add, delete player ì²˜ë¦¬
+	void send_player_postee(player_key_type key, player_postee&& postee);				//player queueì— ì „ë‹¨ì‹œ
 
 private:
 	void do_work();

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "player_task_manager.h"
 
 
@@ -74,7 +74,7 @@ void player_task_manager::create_player(player_key_type player_key, player_poste
 		actor_map_.insert({ player_key, player });
 	}
 
-	//¿©±â¼­ »ı¼ºÇØ¼­ ³Ö´Â´Ù.
+	//ì—¬ê¸°ì„œ ìƒì„±í•´ì„œ ë„£ëŠ”ë‹¤.
 	send_worker_postee(worker_key, [player_key, player, f_postee](player_worker_ptr worker)
 	{
 		worker->add_player(player_key, player);
@@ -98,7 +98,7 @@ void player_task_manager::send_worker_postee(int worker_key, worker_postee && po
 
 void player_task_manager::send_player_postee(player_key_type key, player_postee && postee)
 {
-	//³Ö´Â°Ç Á÷ÂÁ ³Ö¾î¹ö¸°´Ù.
+	//ë„£ëŠ”ê±´ ì§ì© ë„£ì–´ë²„ë¦°ë‹¤.
 	auto iter = actor_map_.find(key);
 	if (iter == actor_map_.end())
 	{
