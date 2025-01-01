@@ -6,19 +6,19 @@
 #include "logger/logger.h"
 #include "logger/lplog_import.h"
 
-#define TEST_PLAYER_MAX 50000
-#define TEST_WORKER_PER_PLAYER 100
+constexpr int kTestPlayerMax = 5000;
+constexpr int kTestWorkerPerPlayer = 100;
 
-struct statistics
+struct Statistics
 {
-	int complte_count;
+	int complete_count;
 };
 
 int main()
 {
 	//using namespace std::placeholders;  // for _1, _2, _3...
 
-	std::shared_ptr< player_task_manager > mgr = std::make_shared<player_task_manager>();
+	auto mgr = std::make_shared<player_task_manager>();
 	player_factory factory;
 
 	logger logger_;
@@ -41,78 +41,52 @@ int main()
 		}
 		else if (str == "a")
 		{
-
-			//mgr의 쓰레드에서 안전하게 처리하게 한다.
-			mgr->invoke([&mgr] {
-				
-				for (int i = 0; i < TEST_PLAYER_MAX; i++)
+			// mgr의 쓰레드에서 안전하게 처리하게 한다.
+			mgr->invoke([mgr] {
+				for (int i = 0; i < kTestPlayerMax; i++)
 				{
-					auto player_key = mgr->new_player_key( i);
-					mgr->create_player(player_key, nullptr );
+					auto player_key = mgr->new_player_key(i);
+					mgr->create_player(player_key, nullptr);
 				}
-			
 			});
 		}
 		else if (str == "w")
 		{
-			std::shared_ptr<statistics > complete_count_ptr = std::make_shared< statistics >();
-			complete_count_ptr->complte_count = 0;
+			auto complete_count_ptr = std::make_shared<Statistics>();
+			complete_count_ptr->complete_count = 0;
 
-			mgr->invoke([&mgr, complete_count_ptr, &logger_] 
-			{
-
-				for (int i = 0; i < TEST_PLAYER_MAX; i++)
+			mgr->invoke([mgr, complete_count_ptr, &logger_] {
+				for (int i = 0; i < kTestPlayerMax; i++)
 				{
-
-					for (int w = 0; w < TEST_WORKER_PER_PLAYER; w++)
+					for (int w = 0; w < kTestWorkerPerPlayer; w++)
 					{
-						mgr->send_player_postee( i, [i,w, complete_count_ptr, &logger_](player_ptr actor, int execute_code){
-
+						mgr->send_player_postee(i, [i, w, complete_count_ptr, &logger_](player_ptr actor, int execute_code) {
 							if (execute_code != 0)
 							{
-									
-
+								// 에러 처리 로직 추가 가능
 							}
 							else
 							{
 								logger_.info("[", i, ", ", w, "] : run");
 								actor->complete_count_++;
-								if (actor->complete_count_ == TEST_WORKER_PER_PLAYER)
+								if (actor->complete_count_ == kTestWorkerPerPlayer)
 								{
-									//mgr 쓰레드에서 호출된다. ( 어차피 하나의 쓰레드이기때문에 합계 데이터에 걍 완료 체크해둔다.
-									actor->send_shared_postee([complete_count_ptr, &logger_]
-									{
-										
-										complete_count_ptr->complte_count++;
-
-										if (complete_count_ptr->complte_count == TEST_PLAYER_MAX)
+									// mgr 쓰레드에서 호출된다. (어차피 하나의 쓰레드이기 때문에 합계 데이터에 완료 체크해둔다.)
+									actor->send_shared_postee([complete_count_ptr, &logger_] {
+										complete_count_ptr->complete_count++;
+										if (complete_count_ptr->complete_count == kTestPlayerMax)
 										{
 											logger_.info("total_worker end...");
 										}
-
 									});
 								}
-
-								
-
 							}
-
 						});
-					
 					}
 				}
-
-
-				int comp = 0;
 			});
-
-
 		}
-
 	}
 
-
-
-    return 0;
+	return 0;
 }
-
