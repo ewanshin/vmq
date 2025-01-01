@@ -23,19 +23,19 @@
 #include <ctime>
 #include <list>
 
-#define LOCK_QUEUE	1
-#define MPSC_QUEUE	2
+//#define LOCK_QUEUE	1
+//#define MPSC_QUEUE	2
+//
+//#define QUEUE_TYPE	MPSC_QUEUE
 
-#define QUEUE_TYPE	MPSC_QUEUE
 
 
-
-#include "queue/mpsc-queue.hpp"
-
-#include "actor.h"
-#include "player.h"
-#include "player_worker.h"
-#include "player_task_manager.h"
+//#include "queue/mpsc-queue.hpp"
+//
+//#include "actor.h"
+//#include "player.h"
+//#include "player_worker.h"
+//#include "player_task_manager.h"
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 
 

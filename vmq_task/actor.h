@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define POP_TASK_COUNT 1
 
@@ -20,7 +20,7 @@ public:
 
 public:
 
-	//queue¸¦ mpsc·Î ¹Ù²Û´Ù.
+	//queueë¥¼ mpscë¡œ ë°”ê¾¼ë‹¤.
 #if QUEUE_TYPE == LOCK_QUEUE
 	std::queue< std::function<void()> >			task_queue_;
 	std::mutex									queue_mutex_;
@@ -42,8 +42,8 @@ auto actor::invoke(F&& f, Args&&... args)
 
 	auto task = std::make_shared< std::packaged_task<return_type()> >
 		(
-			//ÅÛÇÃ¸´ ÇÔ¼ö´Â ¿ìÃø°ª ÂüÁ¶¸¦ Ãß·ĞÇÑ´Ù. f.args°¡ ÁÂÃø°ªÀÌ¾îµµ ÄÄÆÄÀÏ ¿¡·¯°¡ ¾È³­´Ù.
-			//forward´Â ÅÛÇÃ¸´ ÇÔ¼ö¿¡¼­ ÁÂÃø°ªÀº ÃÒÃø°ª, ¿ìÃø°ªÀº ¿ìÃø°ªÀ¸·Î ¹Ù²Û´Ù. ( ¿ø·¡ÀÇ ÇüÅÂ )
+			//í…œí”Œë¦¿ í•¨ìˆ˜ëŠ” ìš°ì¸¡ê°’ ì°¸ì¡°ë¥¼ ì¶”ë¡ í•œë‹¤. f.argsê°€ ì¢Œì¸¡ê°’ì´ì–´ë„ ì»´íŒŒì¼ ì—ëŸ¬ê°€ ì•ˆë‚œë‹¤.
+			//forwardëŠ” í…œí”Œë¦¿ í•¨ìˆ˜ì—ì„œ ì¢Œì¸¡ê°’ì€ ì´¤ì¸¡ê°’, ìš°ì¸¡ê°’ì€ ìš°ì¸¡ê°’ìœ¼ë¡œ ë°”ê¾¼ë‹¤. ( ì›ë˜ì˜ í˜•íƒœ )
 			std::bind(std::forward<F>(f), std::forward<Args>(args)...)
 		);
 
@@ -59,7 +59,7 @@ auto actor::invoke(F&& f, Args&&... args)
 	task_queue_.emplace ( [task](){ (*task)();});
 
 #endif
-	//°á°ú¿¡ getÇØ¼­ waitÀ» »ç¿ëÇÒ¼ö ÀÖ´Ù.
+	//ê²°ê³¼ì— getí•´ì„œ waitì„ ì‚¬ìš©í• ìˆ˜ ìˆë‹¤.
 	return res;
 }
 

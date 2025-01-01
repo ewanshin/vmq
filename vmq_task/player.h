@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 typedef int player_key_type;
 

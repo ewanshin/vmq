@@ -1,7 +1,10 @@
-// vmq_task.cpp : ÄÜ¼Ö ÀÀ¿ë ÇÁ·Î±×·¥¿¡ ´ëÇÑ ÁøÀÔÁ¡À» Á¤ÀÇÇÕ´Ï´Ù.
+ï»¿// vmq_task.cpp : ì½˜ì†” ì‘ìš© í”„ë¡œê·¸ë¨ì— ëŒ€í•œ ì§„ì…ì ì„ ì •ì˜í•©ë‹ˆë‹¤.
 //
 
 #include "stdafx.h"
+//#include "spdlog/spdlog.h"
+#include "logger/logger.h"
+#include "logger/lplog_import.h"
 
 #define TEST_PLAYER_MAX 50000
 #define TEST_WORKER_PER_PLAYER 100
@@ -18,6 +21,9 @@ int main()
 	std::shared_ptr< player_task_manager > mgr = std::make_shared<player_task_manager>();
 	player_factory factory;
 
+	logger logger_;
+	logger_.start();
+	logger_.debug("Start");
 
 	mgr->set_player_factory(&factory);
 	mgr->create_worker(100);
@@ -36,7 +42,7 @@ int main()
 		else if (str == "a")
 		{
 
-			//mgrÀÇ ¾²·¹µå¿¡¼­ ¾ÈÀüÇÏ°Ô Ã³¸®ÇÏ°Ô ÇÑ´Ù.
+			//mgrì˜ ì“°ë ˆë“œì—ì„œ ì•ˆì „í•˜ê²Œ ì²˜ë¦¬í•˜ê²Œ í•œë‹¤.
 			mgr->invoke([&mgr] {
 				
 				for (int i = 0; i < TEST_PLAYER_MAX; i++)
@@ -52,7 +58,7 @@ int main()
 			std::shared_ptr<statistics > complete_count_ptr = std::make_shared< statistics >();
 			complete_count_ptr->complte_count = 0;
 
-			mgr->invoke([&mgr, complete_count_ptr] 
+			mgr->invoke([&mgr, complete_count_ptr, &logger_] 
 			{
 
 				for (int i = 0; i < TEST_PLAYER_MAX; i++)
@@ -60,7 +66,7 @@ int main()
 
 					for (int w = 0; w < TEST_WORKER_PER_PLAYER; w++)
 					{
-						mgr->send_player_postee( i, [i,w, complete_count_ptr](player_ptr actor, int execute_code){
+						mgr->send_player_postee( i, [i,w, complete_count_ptr, &logger_](player_ptr actor, int execute_code){
 
 							if (execute_code != 0)
 							{
@@ -69,19 +75,19 @@ int main()
 							}
 							else
 							{
-								std::cout << "[" << i << ", " << w << "] : run" << std::endl;
+								logger_.info("[", i, ", ", w, "] : run");
 								actor->complete_count_++;
 								if (actor->complete_count_ == TEST_WORKER_PER_PLAYER)
 								{
-									//mgr ¾²·¹µå¿¡¼­ È£ÃâµÈ´Ù. ( ¾îÂ÷ÇÇ ÇÏ³ªÀÇ ¾²·¹µåÀÌ±â¶§¹®¿¡ ÇÕ°è µ¥ÀÌÅÍ¿¡ °Á ¿Ï·á Ã¼Å©ÇØµĞ´Ù.
-									actor->send_shared_postee([complete_count_ptr]
+									//mgr ì“°ë ˆë“œì—ì„œ í˜¸ì¶œëœë‹¤. ( ì–´ì°¨í”¼ í•˜ë‚˜ì˜ ì“°ë ˆë“œì´ê¸°ë•Œë¬¸ì— í•©ê³„ ë°ì´í„°ì— ê± ì™„ë£Œ ì²´í¬í•´ë‘”ë‹¤.
+									actor->send_shared_postee([complete_count_ptr, &logger_]
 									{
 										
 										complete_count_ptr->complte_count++;
 
 										if (complete_count_ptr->complte_count == TEST_PLAYER_MAX)
 										{
-											std::cout << "total_worker end..." << std::endl;
+											logger_.info("total_worker end...");
 										}
 
 									});

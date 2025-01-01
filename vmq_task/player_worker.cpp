@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "player_worker.h"
 #include "player_task_manager.h"
 
@@ -40,7 +40,7 @@ void player_worker::do_work()
 	while (terminated_ == false )
 	{
 		int execute_count = 0;
-		//workerÀÇ posteeÃ³¸®
+		//workerì˜ posteeì²˜ë¦¬
 		execute_count += execute_task();
 
 		int loop_index = 0;
@@ -51,7 +51,7 @@ void player_worker::do_work()
 			{
 				execute_count += a.second->execute_task(pop_postee_per_actor_);;
 
-				//¹«ÇÑ ·çÇÁ µ¹¸®¸é cpu 100¸ÔÀ¸´Ï. ºñÀÛ¾÷ÀÌ worker_count_per_sleep_ ½ÎÀÌÁî ´ÜÀ§ ÀÌ¸é ÇÑ¹ø ½º¸³°É¾îÁÖ°í,
+				//ë¬´í•œ ë£¨í”„ ëŒë¦¬ë©´ cpu 100ë¨¹ìœ¼ë‹ˆ. ë¹„ì‘ì—…ì´ worker_count_per_sleep_ ì‹¸ì´ì¦ˆ ë‹¨ìœ„ ì´ë©´ í•œë²ˆ ìŠ¤ë¦½ê±¸ì–´ì£¼ê³ ,
 				if (loop_index != 0 && loop_index % worker_count_per_sleep_ == 0)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
