@@ -22,8 +22,8 @@ int main()
 	player_factory factory;
 
 	logger logger_;
-	logger_.start();
-	logger_.debug("Start");
+	logger_.start("vmq.log", log_level::level_info);
+	logger_.info("Start");
 
 	mgr->set_player_factory(&factory);
 	mgr->create_worker(100);
@@ -41,6 +41,7 @@ int main()
 		}
 		else if (str == "a")
 		{
+			logger_.info("create player");
 			// mgr의 쓰레드에서 안전하게 처리하게 한다.
 			mgr->invoke([mgr] {
 				for (int i = 0; i < kTestPlayerMax; i++)
@@ -52,6 +53,7 @@ int main()
 		}
 		else if (str == "w")
 		{
+			logger_.info("start work");	
 			auto complete_count_ptr = std::make_shared<Statistics>();
 			complete_count_ptr->complete_count = 0;
 
@@ -67,7 +69,7 @@ int main()
 							}
 							else
 							{
-								logger_.info("[", i, ", ", w, "] : run");
+								logger_.debug("[", i, ", ", w, "] : run");
 								actor->complete_count_++;
 								if (actor->complete_count_ == kTestWorkerPerPlayer)
 								{

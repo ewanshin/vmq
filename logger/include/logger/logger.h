@@ -21,7 +21,7 @@ public:
 	logger();
 	~logger();
 
-	bool start(/*const std::string& module, const lplog_conf::option& conf*/);
+	bool start(std::string file_name, log_level level);
 	void release();
 
 	template<typename ... Args>	inline void trace(Args const& ... args) { log(level_trace, args...); }

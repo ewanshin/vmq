@@ -11,8 +11,6 @@ public:
     Implement() 
     {
         // 로그 시스템 초기화 코드
-        console_ = spdlog::stdout_color_mt("console");
-        file_ = spdlog::daily_logger_format_mt("file", "logs.txt");
     }
 
     ~Implement() 
@@ -21,8 +19,46 @@ public:
         spdlog::shutdown();
     }
 
-    bool start() {
+    bool start(std::string file_name, log_level level) 
+    {
+
+        console_ = spdlog::stdout_color_mt("console");
+		file_ = spdlog::daily_logger_format_mt("file", file_name);
+
         // 로그 시작 관련 코드
+        switch (level)
+        {
+        case log_level::level_trace:
+        {
+            spdlog::set_level(spdlog::level::level_enum::trace);
+        }
+        break;
+        case log_level::level_debug:
+        {
+            spdlog::set_level(spdlog::level::level_enum::debug);
+        }
+        break;
+        case log_level::level_info:
+        {
+            spdlog::set_level(spdlog::level::level_enum::info);
+        }
+        break;
+        case log_level::level_warn:
+        {
+            spdlog::set_level(spdlog::level::level_enum::warn);
+        }
+        break;
+        case log_level::level_error:
+        {
+            spdlog::set_level(spdlog::level::level_enum::err);
+        }
+        break;
+        case log_level::level_fatal:
+        {
+            spdlog::set_level(spdlog::level::level_enum::critical);
+        }
+        break;
+        }
         return true;
     }
 
@@ -128,9 +164,9 @@ logger::logger()
 
 logger::~logger() = default;
 
-bool logger::start()
+bool logger::start(std::string file_name, log_level level)
 {
-    return impl_->start();
+    return impl_->start(file_name, level);
 }
 
 void logger::release()
